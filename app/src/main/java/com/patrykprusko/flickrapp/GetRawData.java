@@ -33,11 +33,11 @@ public class GetRawData extends AsyncTask<String, Void, String> {
         mDownloadStatus = DownloadStatus.IDLE;
     }
 
-
-    @Override
-    protected void onPostExecute(String s) {
-        Log.d(TAG, "onPostExecute: starts , parameter : " + s);
-        super.onPostExecute(s);
+    void runInSameThread(String s) {
+        Log.d(TAG, "runInSameThread: starts");
+        if(mCallback != null) {
+            doInBackground(s);
+        }
     }
 
     @Override
@@ -57,6 +57,7 @@ public class GetRawData extends AsyncTask<String, Void, String> {
             try {
                 url = new URL(strings[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
                 Log.d(TAG, "doInBackground: connected -> " + connection.getResponseMessage());
 
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
