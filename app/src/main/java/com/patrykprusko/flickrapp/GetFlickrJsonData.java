@@ -4,12 +4,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GetFlickrJsonData extends AsyncTask< String, Void, List<Photo> > implements GetRawData.OnDownloadComplete {
     private static final String TAG = "GetFlickrJsonData";
-    private List<Photo> PhotoList;
+    private List<Photo> photoList;
     private OnDataAvailable callback;
     private String baseURL;
     private String language;
@@ -60,9 +65,54 @@ public class GetFlickrJsonData extends AsyncTask< String, Void, List<Photo> > im
         super.onPostExecute(s);
     }
 
+    // uses JSONArray class
     @Override
-    public void onDownloadComplete(String s, DownloadStatus status) {
-        
+    public void onDownloadComplete(String data, DownloadStatus status) {
+        Log.d(TAG, "onDownloadComplete: starts. Status = " + status);
+
+        if(status == DownloadStatus.OK) {
+
+            photoList = new ArrayList<>();
+
+            try {
+                JSONObject jsonData = new JSONObject(data);
+                JSONArray jsonArray = jsonData.getJSONArray("items");
+
+                for(int i = 0 ; i < jsonArray.length(); i++) {
+
+                    JSONObject jsonPhoto = jsonArray.getJSONObject(i); // get record object
+                    String title = jsonPhoto.getString("title");
+                    String author = jsonPhoto.getString("author");
+                    String author_id = jsonPhoto.getString("author_id");
+                    String tags = jsonPhoto.getString("tags");
+
+                    // get photo URL
+                    JSONObject jsonMedia = jsonPhoto.getJSONObject("media");
+                    String imageURL = jsonMedia.getString("m");
+
+                    String linkLargeImage = imageURL.replaceFirst("_m.", "_b."); // turns the photo into a big one
+
+                    Photo photoObject = new Photo(title, author, author_id, linkLargeImage, imageURL, tags);
+                    photoList.add( photoObject ); // adds a new record to display
+                    Log.d(TAG, "onDownloadComplete: -> " + photoObject);
+                }
+                
+
+            } catch (JSONException jsone) {
+                jsone.printStackTrace();
+                Log.e(TAG, "onDownloadComplete: Error processing Json data " + jsone.getMessage() );
+                status = DownloadStatus.FAILED_OR_EMPTY;
+            }
+
+        } else {
+            Log.d(TAG, "onDownloadComplete: data problem ");
+            status = DownloadStatus.FAILED_OR_EMPTY;
+        }
+
+        Log.d(TAG, "onDownloadComplete: ends");
+
+        callback.onDataAvailable(photoList, status);
+
     }
 
 

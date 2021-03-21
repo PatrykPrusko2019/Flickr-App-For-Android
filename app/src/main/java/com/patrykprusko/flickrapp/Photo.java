@@ -64,4 +64,16 @@ public class Photo {
     public void setTags(String tags) {
         this.tags = tags;
     }
+
+    @Override
+    public String toString() {
+        return "Photo{" +
+                "title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", author_id='" + author_id + '\'' +
+                ", linkLargeImage='" + linkLargeImage + '\'' +
+                ", urlImage='" + urlImage + '\'' +
+                ", tags='" + tags + '\'' +
+                '}';
+    }
 }

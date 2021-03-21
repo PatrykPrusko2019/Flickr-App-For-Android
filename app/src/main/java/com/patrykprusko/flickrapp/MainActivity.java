@@ -59,6 +59,13 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
 
     @Override
     public void onDataAvailable(List<Photo> data, DownloadStatus status) {
-
+        Log.d(TAG, "onDataAvailable: starts");
+        
+        if(status == DownloadStatus.OK) {
+            
+        } else {
+            
+        }
+        Log.d(TAG, "onDataAvailable: ends");
     }
 }

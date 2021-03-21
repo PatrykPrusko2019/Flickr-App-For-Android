@@ -36,8 +36,10 @@ public class GetRawData extends AsyncTask<String, Void, String> {
     void runInSameThread(String s) {
         Log.d(TAG, "runInSameThread: starts");
         if(mCallback != null) {
-            doInBackground(s);
+           mCallback.onDownloadComplete( doInBackground(s) , mDownloadStatus); // goes to the GetFlickrJsonData class
+            // Log.d(TAG, "runInSameThread: results: " + result); // shows results
         }
+        Log.d(TAG, "runInSameThread: ends");
     }
 
     @Override
@@ -70,10 +72,16 @@ public class GetRawData extends AsyncTask<String, Void, String> {
                 this.mDownloadStatus = DownloadStatus.OK;
                 return builder.toString();
 
-            } catch (MalformedURLException e) {
+            } catch (MalformedURLException e) { //todo which problems
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         }
