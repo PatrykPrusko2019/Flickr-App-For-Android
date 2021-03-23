@@ -7,7 +7,7 @@
     android:weightSum="3">
 
     <ImageView
-        android:id="@+id/thumbnail"
+        android:id="@+id/thumbnail_browse"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -15,7 +15,7 @@
         app:srcCompat="@drawable/placeholder" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/title_browse"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

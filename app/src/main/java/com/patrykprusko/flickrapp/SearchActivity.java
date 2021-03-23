@@ -27,5 +27,10 @@ public class SearchActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
+
+
+
     }
 }
