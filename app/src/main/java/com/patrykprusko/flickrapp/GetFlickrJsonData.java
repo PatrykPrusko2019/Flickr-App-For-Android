@@ -3,22 +3,26 @@ package com.patrykprusko.flickrapp;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetFlickrJsonData extends AsyncTask< String, Void, List<Photo> > implements GetRawData.OnDownloadComplete {
+
+public class GetFlickrJsonData extends AsyncTask< String, Void, List<Photo>> implements GetRawData.OnDownloadComplete {
     private static final String TAG = "GetFlickrJsonData";
-    private List<Photo> photoList;
-    private OnDataAvailable callback;
+
+    private List<Photo> photoList = null;
     private String baseURL;
     private String language;
     private boolean matchAll;
+
+    private final OnDataAvailable callback;
+
+    interface OnDataAvailable {
+        void onDataAvailable(List<Photo> data, DownloadStatus status);
+    }
 
     public GetFlickrJsonData(OnDataAvailable callback, String baseURL, String language, boolean matchAll) {
         this.callback = callback;
@@ -27,42 +31,52 @@ public class GetFlickrJsonData extends AsyncTask< String, Void, List<Photo> > im
         this.matchAll = matchAll;
     }
 
+    @Override
+    protected void onPostExecute(List<Photo> photos) {
+        Log.d(TAG, "onPostExecute: starts");
 
-    interface OnDataAvailable {
-        void onDataAvailable(List<Photo> data, DownloadStatus status);
+        if(callback != null) {
+            callback.onDataAvailable(photoList, DownloadStatus.OK);
+        }
+
+        Log.d(TAG, "onPostExecute: ends");
     }
 
 
     @Override
-    protected List<Photo> doInBackground(String... strings) {
+    protected List<Photo> doInBackground(String... params) {
         Log.d(TAG, "doInBackground: starts");
 
         //created uri + parameters
-        String newUri = createNewUri(strings[0], this.language, this.matchAll);
+        String newUri = createNewUri(params[0], language, matchAll);
+
         GetRawData getRawData = new GetRawData(this);
         getRawData.runInSameThread(newUri);
 
         Log.d(TAG, "doInBackground: ends");
-        return null;
+        return photoList;
     }
 
     // created new Uri
     private String createNewUri(String searchCriteria, String language, boolean matchAll) {
-
+        Log.d(TAG, "createUri starts");
         // ?tags=android,nougat,sdk& tagmode=any& lang=us-en& format=json& nojsoncallback=1
-        Uri newUri = Uri.parse(this.baseURL).buildUpon()
-                                        .appendQueryParameter("tags", searchCriteria)
-                                        .appendQueryParameter("tagmode", matchAll ? "all" : "any")
-                                        .appendQueryParameter("lang", language)
-                                        .appendQueryParameter("format", "json")
-                                        .appendQueryParameter("nojsoncallback" , "1")
-                                        .build();
-        return newUri.toString();
-    }
+//        Uri newUri = Uri.parse(baseURL).buildUpon()
+//                                        .appendQueryParameter("tags", searchCriteria)
+//                                        .appendQueryParameter("tagmode", matchAll ? "all" : "any")
+//                                        .appendQueryParameter("lang", language)
+//                                        .appendQueryParameter("format", "json")
+//                                        .appendQueryParameter("nojsoncallback" , "1")
+//                                        .build();
 
-    @Override
-    protected void onPostExecute(List<Photo> s) {
-        super.onPostExecute(s);
+        //second way
+        return Uri.parse(baseURL).buildUpon()
+                .appendQueryParameter("tags", searchCriteria)
+                .appendQueryParameter("tagmode", matchAll ? "ALL" : "ANY")
+                .appendQueryParameter("lang", language)
+                .appendQueryParameter("format", "json")
+                .appendQueryParameter("nojsoncallback", "1")
+                .build().toString();
     }
 
     // uses JSONArray class
@@ -96,23 +110,19 @@ public class GetFlickrJsonData extends AsyncTask< String, Void, List<Photo> > im
                     photoList.add( photoObject ); // adds a new record to display
                     Log.d(TAG, "onDownloadComplete: -> " + photoObject);
                 }
-                
+
 
             } catch (JSONException jsone) {
                 jsone.printStackTrace();
                 Log.e(TAG, "onDownloadComplete: Error processing Json data " + jsone.getMessage() );
-                status = DownloadStatus.FAILED_OR_EMPTY;
             }
 
         } else {
             Log.d(TAG, "onDownloadComplete: data problem ");
-            status = DownloadStatus.FAILED_OR_EMPTY;
         }
 
+
         Log.d(TAG, "onDownloadComplete: ends");
-
-        callback.onDataAvailable(photoList, status);
-
     }
 
 

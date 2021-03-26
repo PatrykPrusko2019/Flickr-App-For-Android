@@ -9,28 +9,26 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
-//todo next
-
+//moja klasa
 enum DownloadStatus {
-    IDLE, PROCESSING, NOT_INITIALIZED, FAILED_OR_EMPTY, OK;
+    IDLE, PROCESSING, NOT_INITIALIZED, FAILED_OR_EMPTY, OK
 }
 
-public class GetRawData extends AsyncTask<String, Void, String> {
+class GetRawData extends AsyncTask<String, Void, String> {
 
     private static final String TAG = "GetRawData";
 
     private final OnDownloadComplete mCallback;
     private DownloadStatus mDownloadStatus;
 
-    interface OnDownloadComplete {
-        void onDownloadComplete(String s, DownloadStatus status);
-    }
-
     public GetRawData(OnDownloadComplete callBacks) {
         mCallback = callBacks;
         mDownloadStatus = DownloadStatus.IDLE;
+    }
+
+    interface OnDownloadComplete {
+        void onDownloadComplete(String s, DownloadStatus status);
     }
 
     void runInSameThread(String s) {
@@ -46,41 +44,49 @@ public class GetRawData extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... strings) {
 
         Log.d(TAG, "doInBackground: starts");
+        HttpURLConnection connection = null;
         BufferedReader reader = null;
         URL url = null;
 
-        if(strings[0] == null) {
+        if(strings == null) {
             this.mDownloadStatus = DownloadStatus.NOT_INITIALIZED;
             return null;
         } else {
 
-            this.mDownloadStatus = DownloadStatus.PROCESSING;
 
             try {
+                this.mDownloadStatus = DownloadStatus.PROCESSING;
+
                 url = new URL(strings[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 Log.d(TAG, "doInBackground: connected -> " + connection.getResponseMessage());
 
+                StringBuilder result = new StringBuilder();
+
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                StringBuilder builder = new StringBuilder();
 
                 for (String line = reader.readLine() ; null != line; line = reader.readLine()  ) {
-                    builder.append(line + "\n");
+                    result.append(line + "\n");
                 }
                 this.mDownloadStatus = DownloadStatus.OK;
-                return builder.toString();
+                return result.toString();
 
-            } catch (MalformedURLException e) { //todo which problems
-                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                Log.e(TAG, "doInBackground: Invalid URL " + e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "doInBackground: IO Exception reading data: " + e.getMessage());
             } finally {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(connection != null) {
+                    connection.disconnect();
+                }
+                if(reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
