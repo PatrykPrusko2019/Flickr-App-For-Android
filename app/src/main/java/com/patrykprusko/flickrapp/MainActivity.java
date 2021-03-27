@@ -4,7 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.view.View;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,11 +18,13 @@ import java.util.List;
 /**
  * start project FlickrApp
  */
-public class MainActivity extends AppCompatActivity implements GetFlickrJsonData.OnDataAvailable {
+public class MainActivity extends AppCompatActivity implements GetFlickrJsonData.OnDataAvailable, RecyclerItemClickListener.OnRecyclerClickListener {
 
     private static final String TAG = "MainActivity";
 
     private FlickrRecyclerViewAdapter mFlickrRecyclerViewAdapter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +38,15 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // sets the manager layout
 
+       recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, recyclerView, this));
+
+
        mFlickrRecyclerViewAdapter = new FlickrRecyclerViewAdapter(this, new ArrayList<Photo>());
        recyclerView.setAdapter(mFlickrRecyclerViewAdapter); //sets adapter
 
 
         GetFlickrJsonData getFlickrJsonData = new GetFlickrJsonData(this, "https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
         getFlickrJsonData.execute("android,nougat"); // creates URL + search parameters to be able to retrieve using JSON objects
-
 
 
 
@@ -88,5 +93,17 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
         }
 
         Log.d(TAG, "onDataAvailable: ends");
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.d(TAG, "onItemClick: starts");
+        Toast.makeText(MainActivity.this, "Normal tap at position " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        Log.d(TAG, "onItemLongClick: starts");
+        Toast.makeText(MainActivity.this, "Normal tap at position " + position, Toast.LENGTH_SHORT).show();
     }
 }
