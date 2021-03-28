@@ -46,6 +46,7 @@ class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewA
         // Get element from your mPhotoList at this position and replace the contents of the view with that element
 
         if( mPhotoList == null || mPhotoList.size() == 0 ) {
+            Log.d(TAG, "onBindViewHolder: empty image");
             holder.getThumbnail().setImageResource(R.drawable.placeholder_broken_image);
             holder.getTitle().setText(R.string.empty_photo);
         } else {

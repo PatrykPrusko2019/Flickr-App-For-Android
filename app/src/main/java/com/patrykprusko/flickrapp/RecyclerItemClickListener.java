@@ -16,17 +16,28 @@ public class RecyclerItemClickListener extends RecyclerView.SimpleOnItemTouchLis
     private final GestureDetectorCompat mGestureDetector;
     private final OnRecyclerClickListener mListener;
 
-    public RecyclerItemClickListener(Context context, RecyclerView recyclerView, OnRecyclerClickListener listener) {
+    public RecyclerItemClickListener(final Context context, final RecyclerView recyclerView, OnRecyclerClickListener listener) {
         mListener = listener;
         mGestureDetector = new GestureDetectorCompat(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                return super.onSingleTapUp(e);
+                Log.d(TAG, "onSingleTapUp: starts");
+                View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                if(childView != null && mListener != null) {
+                    Log.d(TAG, "onSingleTapUp: calling listener.onItemClick");
+                    mListener.onItemClick(childView, recyclerView.getChildAdapterPosition(childView)); // getChildAdapterPosition() -> return Adapter position corresponding to the given view or no position
+                }
+                return true;
             }
 
             @Override
             public void onLongPress(MotionEvent e) {
-                super.onLongPress(e);
+                Log.d(TAG, "onLongPress: starts");
+                View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                if(childView != null && mListener != null) {
+                    Log.d(TAG, "onLongPress: calling listener.onItemLongClick");
+                    mListener.onItemLongClick(childView, recyclerView.getChildAdapterPosition(childView));
+                }
             }
         });
     }
@@ -49,4 +60,6 @@ public class RecyclerItemClickListener extends RecyclerView.SimpleOnItemTouchLis
         }
 
     }
+
+
 }
