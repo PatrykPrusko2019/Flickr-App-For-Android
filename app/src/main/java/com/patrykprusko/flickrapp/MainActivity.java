@@ -1,12 +1,13 @@
 package com.patrykprusko.flickrapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,11 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-//klasa nie moja z kursu
 /**
  * start project FlickrApp
  */
-public class MainActivity extends AppCompatActivity implements GetFlickrJsonData.OnDataAvailable, RecyclerItemClickListener.OnRecyclerClickListener {
+public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDataAvailable, RecyclerItemClickListener.OnRecyclerClickListener {
 
     private static final String TAG = "MainActivity";
 
@@ -31,9 +31,7 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
         Log.d(TAG, "onCreate: starts");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        activateToolbar(false);
 
        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // sets the manager layout
@@ -47,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
 
         GetFlickrJsonData getFlickrJsonData = new GetFlickrJsonData(this, "https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
         getFlickrJsonData.execute("android,nougat"); // creates URL + search parameters to be able to retrieve using JSON objects
-
 
 
         Log.d(TAG, "onCreate: ends");
@@ -84,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
         Log.d(TAG, "onDataAvailable: starts");
         
         if(status == DownloadStatus.OK) {
-            Log.d(TAG, "onDataAvailable: status -> " + status + ", starts loadNewData with class FlickrRecyclerViewAdapter");
+            Log.d(TAG, "onDataAvailable: status -> " + status + ", starts method loadNewData with class 's FlickrRecyclerViewAdapter");
             mFlickrRecyclerViewAdapter.loadNewData(data);
 
         } else {
@@ -105,5 +102,10 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
     public void onItemLongClick(View view, int position) {
         Log.d(TAG, "onItemLongClick: starts");
         Toast.makeText(MainActivity.this, "Normal tap at position " + position, Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, PhotoDetailActivity.class); // jump next activity -> PhotoDetailActivity
+            intent.putExtra(PHOTO_TRANSFER, mFlickrRecyclerViewAdapter.getItemCount());
+            startActivity(intent);
+
     }
 }
