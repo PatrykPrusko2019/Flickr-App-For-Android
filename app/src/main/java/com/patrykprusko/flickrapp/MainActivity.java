@@ -6,9 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,7 +42,7 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
 
 
         GetFlickrJsonData getFlickrJsonData = new GetFlickrJsonData(this, "https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
-        getFlickrJsonData.execute("android,nougat"); // creates URL + search parameters to be able to retrieve using JSON objects
+        getFlickrJsonData.execute("summer"); // creates URL + search parameters to be able to retrieve using JSON objects
 
 
         Log.d(TAG, "onCreate: ends");
@@ -104,7 +102,7 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
         Toast.makeText(MainActivity.this, "Normal tap at position " + position, Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(this, PhotoDetailActivity.class); // jump next activity -> PhotoDetailActivity
-            intent.putExtra(PHOTO_TRANSFER, mFlickrRecyclerViewAdapter.getItemCount());
+            intent.putExtra(PHOTO_TRANSFER, mFlickrRecyclerViewAdapter.getPhoto(position));
             startActivity(intent);
 
     }

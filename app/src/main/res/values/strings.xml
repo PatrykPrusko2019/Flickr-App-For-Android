@@ -4,6 +4,14 @@
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_photo_detail">Photo Detail</string>
     <string name="empty_photo">No photos</string>
+    <string name="photo_author" />
+    <string name="photo_image" />
+    <string name="photo_title" />
+    <string name="photo_tags" />
+    <string name="photo_author_text" />
+    <string name="photo_image_text" />
+    <string name="photo_title_text" />
+    <string name="photo_tags_text" />
 
 
 </resources>

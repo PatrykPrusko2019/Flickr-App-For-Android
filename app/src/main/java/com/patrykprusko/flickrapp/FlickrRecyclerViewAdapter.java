@@ -68,6 +68,11 @@ class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewA
         return  (mPhotoList != null) && (mPhotoList.size() != 0) ? mPhotoList.size() : 0 ;
     }
 
+    // get actuals record photo , which to display in activity -> PhotoDetailActivity
+    Photo getPhoto(int position) {
+        return mPhotoList.get(position);
+    }
+
 
      void loadNewData(List<Photo> data) {
         mPhotoList = data;
