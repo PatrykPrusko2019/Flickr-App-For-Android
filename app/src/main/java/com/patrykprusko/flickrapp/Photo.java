@@ -2,6 +2,10 @@ package com.patrykprusko.flickrapp;
 
 import java.io.Serializable;
 
+
+/**
+ *  photo record
+ */
 public class Photo implements Serializable {
     private String title;
     private String author;
@@ -23,48 +27,20 @@ public class Photo implements Serializable {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getAuthor() {
         return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getAuthor_id() {
-        return author_id;
-    }
-
-    public void setAuthor_id(String author_id) {
-        this.author_id = author_id;
     }
 
     public String getLinkLargeImage() {
         return linkLargeImage;
     }
 
-    public void setLinkLargeImage(String linkLargeImage) {
-        this.linkLargeImage = linkLargeImage;
-    }
-
     public String getUrlImage() {
         return urlImage;
     }
 
-    public void setUrlImage(String urlImage) {
-        this.urlImage = urlImage;
-    }
-
     public String getTags() {
         return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
     }
 
     @Override

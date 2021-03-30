@@ -27,13 +27,14 @@ public class PhotoDetailActivity extends BaseActivity {
         TextView photoTags = (TextView) findViewById(R.id.photo_tags);
         ImageView photoImage = (ImageView) findViewById(R.id.photo_image);
 
-        photoAuthor.setText(recordPhoto.getAuthor());
-        photoTitle.setText(recordPhoto.getTitle());
-        photoTags.setText(recordPhoto.getTags());
+        if(recordPhoto != null) {
+            photoAuthor.setText("Author: " + recordPhoto.getAuthor());
+            photoTitle.setText("Title: " + recordPhoto.getTitle());
+            photoTags.setText("Tag: " + recordPhoto.getTags());
 
-        Picasso.with(this).load(recordPhoto.getLinkLargeImage()).placeholder(R.drawable.placeholder_image) // get large image
-                .error(R.drawable.placeholder_broken_image).into(photoImage);
-
+            Picasso.with(this).load(recordPhoto.getLinkLargeImage()).placeholder(R.drawable.placeholder_image) // get large image
+                    .error(R.drawable.placeholder_broken_image).into(photoImage);
+        }
 
 
     }
