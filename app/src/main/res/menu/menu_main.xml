@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.patrykprusko.flickrapp.MainActivity">
 
-    <item android:id="@+id/action_search"
-          android:title="Search"
-        />
+    <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Search"
+        app:showAsAction="ifRoom" />
 </menu>

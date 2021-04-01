@@ -1,7 +1,9 @@
 package com.patrykprusko.flickrapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +23,7 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
     private static final String TAG = "MainActivity";
 
     private FlickrRecyclerViewAdapter mFlickrRecyclerViewAdapter;
+    private String resultSearch;
 
 
 
@@ -30,6 +33,10 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         activateToolbar(false);
+
+        if(savedInstanceState != null) {
+            onRestoreInstanceState(savedInstanceState);
+        }
 
        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // sets the manager layout
@@ -41,14 +48,33 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
        recyclerView.setAdapter(mFlickrRecyclerViewAdapter); //sets adapter
 
 
-        GetFlickrJsonData getFlickrJsonData = new GetFlickrJsonData(this, "https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
-        getFlickrJsonData.execute("summer"); // creates URL + search parameters to be able to retrieve using JSON objects
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String chooseByUser = sharedPreferences.getString(FLICKR_QUERY, "");
 
+        if(chooseByUser != null) resultSearch = chooseByUser;
+
+            Log.d(TAG, "onCreate: starts -> new search value : " + this.resultSearch);
+
+            if(resultSearch != null) {
+                Log.d(TAG, "onCreate: user chose correctly !");
+                GetFlickrJsonData getFlickrJsonData = new GetFlickrJsonData(this, "https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
+                getFlickrJsonData.execute(resultSearch); // creates URL + search parameters to be able to retrieve using JSON objects
+            }
 
         Log.d(TAG, "onCreate: ends");
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(FLICKR_QUERY, this.resultSearch);
+        super.onSaveInstanceState(outState);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.resultSearch = savedInstanceState.getString(FLICKR_QUERY);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,6 +93,8 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
+            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+            startActivity(intent);
             return true;
         }
 
