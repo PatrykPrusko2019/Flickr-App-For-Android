@@ -6,15 +6,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 public class SearchActivity extends BaseActivity {
     private static final String TAG = "SearchActivity";
@@ -27,7 +21,6 @@ public class SearchActivity extends BaseActivity {
 
         this.activateToolbar(true);
 
-
     }
 
 
@@ -39,14 +32,16 @@ public class SearchActivity extends BaseActivity {
         EditText valueSearch = (EditText) findViewById(R.id.value_search);
         result = valueSearch.getText().toString();
 
-        if ( result != null ) {
+        if ( result.length() > 0 ) {
             Toast.makeText(this, "new value search -> " + result, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "new value search -> empty choose user" + result, Toast.LENGTH_SHORT).show();
+            result = getIntent().getStringExtra(FLICKR_QUERY); // get previous user search
+            Log.d(TAG, "onClickedButtonResult: " + result);
         }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        sharedPreferences.edit().putString(FLICKR_QUERY, result).apply();
+        sharedPreferences.edit().putString(FLICKR_QUERY, result).apply(); //save the result
 
         Intent intent = new Intent(SearchActivity.this, MainActivity.class);
         startActivity(intent);

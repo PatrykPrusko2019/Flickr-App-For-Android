@@ -59,7 +59,7 @@ public class GetFlickrJsonData extends AsyncTask< String, Void, List<Photo>> imp
 
     // created new Uri
     private String createNewUri(String searchCriteria, String language, boolean matchAll) {
-        Log.d(TAG, "createUri starts");
+        Log.d(TAG, "createUri starts -> " + searchCriteria);
         // ?tags=android,nougat,sdk& tagmode=any& lang=us-en& format=json& nojsoncallback=1
 //        Uri newUri = Uri.parse(baseURL).buildUpon()
 //                                        .appendQueryParameter("tags", searchCriteria)

@@ -34,10 +34,6 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
         setContentView(R.layout.activity_main);
         activateToolbar(false);
 
-        if(savedInstanceState != null) {
-            onRestoreInstanceState(savedInstanceState);
-        }
-
        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // sets the manager layout
 
@@ -48,32 +44,27 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
        recyclerView.setAdapter(mFlickrRecyclerViewAdapter); //sets adapter
 
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String chooseByUser = sharedPreferences.getString(FLICKR_QUERY, "");
-
-        if(chooseByUser != null) resultSearch = chooseByUser;
-
-            Log.d(TAG, "onCreate: starts -> new search value : " + this.resultSearch);
-
-            if(resultSearch != null) {
-                Log.d(TAG, "onCreate: user chose correctly !");
-                GetFlickrJsonData getFlickrJsonData = new GetFlickrJsonData(this, "https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
-                getFlickrJsonData.execute(resultSearch); // creates URL + search parameters to be able to retrieve using JSON objects
-            }
-
         Log.d(TAG, "onCreate: ends");
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(FLICKR_QUERY, this.resultSearch);
-        super.onSaveInstanceState(outState);
-    }
+    protected void onResume() {
+        Log.d(TAG, "onResume: starts");
+        super.onResume();
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        this.resultSearch = savedInstanceState.getString(FLICKR_QUERY);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String criteriaByUser = sharedPreferences.getString(FLICKR_QUERY, "");
+
+        if(criteriaByUser != null) resultSearch = criteriaByUser;
+
+        Log.d(TAG, "onResume: starts -> new search value : " + this.resultSearch);
+
+        if(resultSearch.length() > 0) {
+            Log.d(TAG, "onResume: user chose correctly !");
+            GetFlickrJsonData getFlickrJsonData = new GetFlickrJsonData(this, "https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
+            getFlickrJsonData.execute(resultSearch); // creates URL + search parameters to be able to retrieve using JSON objects
+        }
+        Log.d(TAG, "onResume: ends");
     }
 
     @Override
@@ -94,6 +85,7 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+            intent.putExtra(FLICKR_QUERY, resultSearch);
             startActivity(intent);
             return true;
         }
@@ -105,14 +97,15 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
     @Override
     public void onDataAvailable(List<Photo> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
-        
+
         if(status == DownloadStatus.OK) {
             Log.d(TAG, "onDataAvailable: status -> " + status + ", starts method loadNewData with class 's FlickrRecyclerViewAdapter");
             mFlickrRecyclerViewAdapter.loadNewData(data);
 
         } else {
             // download or processing failed
-            Log.e(TAG, "onDataAvailable failed with status " + status);
+            Toast.makeText(this, "onDataAvailable failed with status ", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "onDataAvailable failed with status " + status + ", and data size() is -> " + data.size() + ". Problem with status or data" );
         }
 
         Log.d(TAG, "onDataAvailable: ends");

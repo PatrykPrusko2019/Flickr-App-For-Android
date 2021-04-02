@@ -17,17 +17,17 @@ import java.util.List;
 class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewAdapter.FlickrImageViewHolder> {
 
     private static final String TAG = "FlickrRecyclerViewAdapt";
-    private List<Photo> mPhotoList;
+    private List<Photo> mPhotosList;
     private Context mContext;
 
 
     /**
      *
-     * @param photoList containing the data to populate views to be used by RecyclerView
+     * @param photosList containing the data to populate views to be used by RecyclerView
      */
-    public FlickrRecyclerViewAdapter(Context context , List<Photo> photoList) {
+    public FlickrRecyclerViewAdapter(Context context , List<Photo> photosList) {
         mContext = context;
-        mPhotoList = photoList;
+        mPhotosList = photosList;
     }
 
     // Create new views (invoked by the layout manager)
@@ -45,12 +45,12 @@ class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewA
     public void onBindViewHolder( FlickrImageViewHolder holder, int position) {
         // Get element from your mPhotoList at this position and replace the contents of the view with that element
 
-        if( mPhotoList == null || mPhotoList.size() == 0 ) {
+        if( mPhotosList == null || mPhotosList.size() == 0 ) {
             Log.d(TAG, "onBindViewHolder: empty image");
             holder.getThumbnail().setImageResource(R.drawable.placeholder_broken_image);
             holder.getTitle().setText(R.string.empty_photo);
         } else {
-            Photo photoItem = mPhotoList.get(position);
+            Photo photoItem = mPhotosList.get(position);
             Log.d(TAG, "onBindViewHolder: " + photoItem.getTitle() + " ---> " + position);
             holder.getTitle().setText(photoItem.getTitle()); // get title
 
@@ -65,22 +65,23 @@ class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewA
     public int getItemCount() {
         Log.d(TAG, "getItemCount: called");
 
-        return  (mPhotoList != null) && (mPhotoList.size() != 0) ? mPhotoList.size() : 0 ;
+        return  (mPhotosList != null) && (mPhotosList.size() != 0) ? mPhotosList.size() : 1 ;
     }
 
     // get actuals record photo , which to display in activity -> PhotoDetailActivity
     Photo getPhoto(int position) {
-        if(position < mPhotoList.size() && position > -1) {
-            return mPhotoList.get(position);
+        if(position < mPhotosList.size() && position > -1) {
+            return mPhotosList.get(position);
         } else {
             Log.d(TAG, "getPhoto: return null");
             return null;
         }
+
     }
 
 
      void loadNewData(List<Photo> data) {
-        mPhotoList = data;
+        mPhotosList = data;
         notifyDataSetChanged();
 
     }
