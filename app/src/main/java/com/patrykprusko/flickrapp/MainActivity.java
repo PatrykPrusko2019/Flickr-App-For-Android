@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDa
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-            intent.putExtra(FLICKR_QUERY, resultSearch);
+            intent.putExtra(FLICKR_QUERY, resultSearch); // saves the last choice searched by user
             startActivity(intent);
             return true;
         }

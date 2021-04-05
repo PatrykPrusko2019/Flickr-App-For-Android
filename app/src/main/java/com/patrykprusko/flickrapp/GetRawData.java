@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-//moja klasa
+
 enum DownloadStatus {
     IDLE, PROCESSING, NOT_INITIALIZED, FAILED_OR_EMPTY, OK
 }

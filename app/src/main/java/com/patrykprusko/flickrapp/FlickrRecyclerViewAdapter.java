@@ -88,7 +88,7 @@ class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewA
 
 
     /**
-     * Provide a reference to the type of views that you are using
+     * Provides a reference to the type of views that you are using
      */
      static class FlickrImageViewHolder extends RecyclerView.ViewHolder{
         private static final String TAG = "FlickrImageViewHolder";
