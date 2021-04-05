@@ -4,7 +4,7 @@ An application that uses the flickr.com portal to download photos and data from 
 The exact operation of the application:
 1. The main activity begins, searches for the last entered word, and displays the results on the screen. It uses an object of the SharedPreferences type, which saves the searched word, and after turning off and restarting the application, restores the previous search word.
 
-2.The data displayed on the main activity are:
+2. The data displayed on the main activity are:
 - thumbnail (urlImage)
 - title
 which are downloaded as follows:
